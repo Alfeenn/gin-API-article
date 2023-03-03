@@ -11,14 +11,14 @@ import (
 
 type RepoImpl struct{}
 
-func NewRepository() *RepoImpl {
+func NewRepository() Repository {
 	return &RepoImpl{}
 }
 
 func (r *RepoImpl) Create(ctx context.Context, tx *sql.Tx, category model.Article) model.Article {
-	SQL := "INSERT INTO article(id,name,category,status,visibility) VALUES(?,?,?,?,?)"
+	SQL := "INSERT INTO article(id,name,status,visibility,details) VALUES(?,?,?,?,?)"
 	category.Id = uuid.NewString()
-	_, err := tx.ExecContext(ctx, SQL, category.Id, category.Name, category.Category, category.Status, category.Visibility)
+	_, err := tx.ExecContext(ctx, SQL, category.Id, category.Name, category.Status, category.Visibility, category.Details)
 	helper.PanicIfErr(err)
 	return category
 	// TODO: Implement
@@ -40,9 +40,9 @@ func (r *RepoImpl) Delete(ctx context.Context, tx *sql.Tx, id string) {
 	helper.PanicIfErr(err)
 }
 
-func (r *RepoImpl) FindAll(ctx context.Context, tx *sql.Tx, limit int, offset int) []model.Article {
-	sql := "SELECT *FROM article LIMIT(?,?)"
-	rows, err := tx.QueryContext(ctx, sql, limit, offset)
+func (r *RepoImpl) FindAll(ctx context.Context, tx *sql.Tx) []model.Article {
+	sql := "SELECT *FROM article"
+	rows, err := tx.QueryContext(ctx, sql)
 	helper.PanicIfErr(err)
 	defer rows.Close()
 
@@ -50,8 +50,8 @@ func (r *RepoImpl) FindAll(ctx context.Context, tx *sql.Tx, limit int, offset in
 
 	for rows.Next() {
 		article := model.Article{}
-		err := rows.Scan(&article.Id, &article.Name, &article.Category,
-			&article.Status, &article.Visibility, &article.Visibility)
+		err := rows.Scan(&article.Id, &article.Name,
+			&article.Status, &article.Visibility, &article.Details)
 		helper.PanicIfErr(err)
 		sliceArticle = append(sliceArticle, article)
 	}
@@ -59,16 +59,16 @@ func (r *RepoImpl) FindAll(ctx context.Context, tx *sql.Tx, limit int, offset in
 }
 
 func (r *RepoImpl) Find(ctx context.Context, tx *sql.Tx, id string) (model.Article, error) {
-	SQL := "SELECT *FROM article WHERE id=?"
+	SQL := "SELECT *FROM article WHERE id =?"
 
 	rows, err := tx.QueryContext(ctx, SQL, id)
 	helper.PanicIfErr(err)
 	defer rows.Close()
 	article := model.Article{}
 	if rows.Next() {
-		err := rows.Scan(&article.Id, &article.Name, &article.Category,
-			&article.Status, &article.Visibility, &article.Visibility)
-		helper.PanicIfErr(err)
+		rows.Scan(&article.Id, &article.Name,
+			&article.Status, &article.Visibility, &article.Details)
+
 		return article, nil
 	} else {
 		return article, err

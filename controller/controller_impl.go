@@ -13,7 +13,7 @@ type ControllerImpl struct {
 	ServiceModel service.Service
 }
 
-func NewController(c service.Service) *ControllerImpl {
+func NewController(c service.Service) Controller {
 	return &ControllerImpl{
 		ServiceModel: c,
 	}
@@ -25,26 +25,50 @@ func (c *ControllerImpl) Create(g *gin.Context) {
 	err := g.BindJSON(&req)
 	helper.PanicIfErr(err)
 	resp := c.ServiceModel.Create(g.Request.Context(), req)
-
-	g.JSON(http.StatusOK, resp)
+	response := web.WebResponse{
+		Code:   http.StatusCreated,
+		Status: "CREATED",
+		Data:   resp,
+	}
+	g.JSON(http.StatusOK, response)
 }
 
 func (c *ControllerImpl) Update(g *gin.Context) {
-	panic("not implemented") // TODO: Implement
+	req := web.UpdateRequest{}
+	err := g.BindJSON(&req)
+	helper.PanicIfErr(err)
+	result := c.ServiceModel.Update(g.Request.Context(), req)
+	g.JSON(http.StatusOK, result)
+
 }
 
 func (c *ControllerImpl) Delete(g *gin.Context) {
+
+	result := c.ServiceModel.FindAll(g.Request.Context())
+	g.JSON(http.StatusOK, result)
 	panic("not implemented") // TODO: Implement
 }
 
 func (c *ControllerImpl) Find(g *gin.Context) {
-	panic("not implemented") // TODO: Implement
+	id := g.Params.ByName("id")
+	result := c.ServiceModel.Find(g.Request.Context(), id)
+	response := web.WebResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   result,
+	}
+	g.JSON(http.StatusOK, response)
+
 }
 
 func (c *ControllerImpl) FindAll(g *gin.Context) {
-	limit := 3
-	offset := 0
-	result := c.ServiceModel.FindAll(g.Request.Context(), limit, offset)
-	g.JSON(http.StatusOK, result)
-	panic("not implemented") // TODO: Implement
+
+	result := c.ServiceModel.FindAll(g.Request.Context())
+	response := web.WebResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   result,
+	}
+	g.JSON(http.StatusOK, response)
+
 }

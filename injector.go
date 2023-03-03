@@ -29,7 +29,6 @@ func InitializeServer() *gin.Engine {
 		CategorySet,
 		app.NewRouter,
 		middleware.NewMiddleware,
-		NewServer,
 	)
 	return nil
 }

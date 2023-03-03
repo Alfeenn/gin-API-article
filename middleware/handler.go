@@ -1,18 +1,16 @@
 package middleware
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
-type Middleware struct {
-	Handler gin.Engine
-}
+var handler http.Handler
 
-func NewMiddleware(handler gin.Engine) *Middleware {
-	return &Middleware{
-		Handler: handler,
+func NewMiddleware() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		handler.ServeHTTP(ctx.Writer, ctx.Request)
+
 	}
-}
-func (m *Middleware) ServeHTTP(c *gin.Context) {
-	m.Handler.ServeHTTP(c.Writer, c.Request)
 }

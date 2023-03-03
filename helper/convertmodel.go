@@ -9,7 +9,6 @@ func ConvertModel(req model.Article) web.CatResp {
 	return web.CatResp{
 		Id:         req.Id,
 		Name:       req.Name,
-		Category:   req.Category,
 		Status:     req.Status,
 		Visibility: req.Visibility,
 		Details:    req.Details,

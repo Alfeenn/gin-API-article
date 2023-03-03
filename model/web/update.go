@@ -1,7 +1,6 @@
 package web
 
 type UpdateRequest struct {
-	Id       string
-	Name     string
-	Category string
+	Id   string
+	Name string
 }

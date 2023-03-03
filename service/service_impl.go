@@ -15,7 +15,7 @@ type ServiceImpl struct {
 	DB  *sql.DB
 }
 
-func NewService(c repository.Repository, DB *sql.DB) *ServiceImpl {
+func NewService(c repository.Repository, DB *sql.DB) Service {
 	return &ServiceImpl{
 		Rep: c,
 		DB:  DB,
@@ -30,8 +30,6 @@ func (s *ServiceImpl) Create(ctx context.Context, req web.CatRequest) web.CatRes
 	request := model.Article{
 		Id:         req.Id,
 		Name:       req.Name,
-		Category:   req.Category,
-		Url:        req.Url,
 		Status:     req.Status,
 		Visibility: req.Visibility,
 		Details:    req.Details,
@@ -70,17 +68,19 @@ func (s *ServiceImpl) Find(ctx context.Context, id string) web.CatResp {
 	helper.PanicIfErr(err)
 	defer helper.CommitorRollback(tx)
 	model, err := s.Rep.Find(ctx, tx, id)
-	helper.PanicIfErr(err)
+	if err != nil {
+		panic(err)
+	}
 	return helper.ConvertModel(model)
-	// TODO: Implement
+
 }
 
-func (s *ServiceImpl) FindAll(ctx context.Context, limit int, offset int) []web.CatResp {
+func (s *ServiceImpl) FindAll(ctx context.Context) []web.CatResp {
 	tx, err := s.DB.Begin()
 	helper.PanicIfErr(err)
 	defer helper.CommitorRollback(tx)
 
-	slicemodel := s.Rep.FindAll(ctx, tx, limit, offset)
+	slicemodel := s.Rep.FindAll(ctx, tx)
 
 	var webResp []web.CatResp
 

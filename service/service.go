@@ -11,5 +11,5 @@ type Service interface {
 	Update(ctx context.Context, req web.UpdateRequest) web.CatResp
 	Delete(ctx context.Context, id string)
 	Find(ctx context.Context, id string) web.CatResp
-	FindAll(ctx context.Context, limit int, offset int) []web.CatResp
+	FindAll(ctx context.Context) []web.CatResp
 }
