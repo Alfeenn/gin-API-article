@@ -46,7 +46,7 @@ func (c *ControllerImpl) Delete(g *gin.Context) {
 
 	result := c.ServiceModel.FindAll(g.Request.Context())
 	g.JSON(http.StatusOK, result)
-	panic("not implemented") // TODO: Implement
+	panic("not implemented")
 }
 
 func (c *ControllerImpl) Find(g *gin.Context) {

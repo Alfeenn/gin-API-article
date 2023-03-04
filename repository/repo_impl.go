@@ -41,7 +41,12 @@ func (r *RepoImpl) Delete(ctx context.Context, tx *sql.Tx, id string) {
 }
 
 func (r *RepoImpl) FindAll(ctx context.Context, tx *sql.Tx) []model.Article {
-	sql := "SELECT *FROM article"
+	sql := "SELECT a.id,a.name,a.status," +
+		"GROUP_CONCAT(DISTINCT c.category ORDER BY c.category) AS category," +
+		"GROUP_CONCAT(DISTINCT c.url ORDER BY c.url)AS URL,a.visibility FROM wordpress AS w " +
+		"JOIN category_article AS c ON c.id = w.id_category " +
+		"JOIN article AS a ON a.id= w.id_article " +
+		"GROUP BY w.id_article"
 	rows, err := tx.QueryContext(ctx, sql)
 	helper.PanicIfErr(err)
 	defer rows.Close()
@@ -51,7 +56,7 @@ func (r *RepoImpl) FindAll(ctx context.Context, tx *sql.Tx) []model.Article {
 	for rows.Next() {
 		article := model.Article{}
 		err := rows.Scan(&article.Id, &article.Name,
-			&article.Status, &article.Visibility, &article.Details)
+			&article.Status, &article.Category, &article.Url, &article.Visibility)
 		helper.PanicIfErr(err)
 		sliceArticle = append(sliceArticle, article)
 	}
