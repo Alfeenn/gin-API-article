@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/Alfeenn/article/exception"
 	"github.com/Alfeenn/article/helper"
 	"github.com/Alfeenn/article/model"
 	"github.com/Alfeenn/article/model/web"
@@ -69,7 +70,7 @@ func (s *ServiceImpl) Find(ctx context.Context, id string) web.CatResp {
 	defer helper.CommitorRollback(tx)
 	model, err := s.Rep.Find(ctx, tx, id)
 	if err != nil {
-		panic(err)
+		exception.NewNotFounErr(err.Error())
 	}
 	return helper.ConvertModel(model)
 

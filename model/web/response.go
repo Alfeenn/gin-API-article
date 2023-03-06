@@ -7,7 +7,7 @@ type CatResp struct {
 	Name       string                  `json:"name"`
 	Slug       string                  `json:"slug"`
 	Status     string                  `json:"status"`
-	Category   []model.CategoryArticle `json:"category"`
+	Category   []model.CategoryArticle `json:"category,omitempty"`
 	Visibility string                  `json:"visibility"`
 	Details    string                  `json:"details,omitempty"`
 }

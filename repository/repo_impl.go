@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/Alfeenn/article/helper"
 	"github.com/Alfeenn/article/model"
@@ -42,7 +43,7 @@ func (r *RepoImpl) Delete(ctx context.Context, tx *sql.Tx, id string) {
 
 func (r *RepoImpl) FindAll(ctx context.Context, tx *sql.Tx) []model.Article {
 	sql := "SELECT a.id,a.name,a.status," +
-		"GROUP_CONCAT(DISTINCT c.category ORDER BY c.category) AS category," +
+		"GROUP_CONCAT(DISTINCT c.name ORDER BY c.name) AS category," +
 		"GROUP_CONCAT(DISTINCT c.url ORDER BY c.url)AS URL,a.visibility FROM wordpress AS w " +
 		"JOIN category_article AS c ON c.id = w.id_category " +
 		"JOIN article AS a ON a.id= w.id_article " +
@@ -76,7 +77,7 @@ func (r *RepoImpl) Find(ctx context.Context, tx *sql.Tx, id string) (model.Artic
 
 		return article, nil
 	} else {
-		return article, err
+		return article, errors.New("no category found")
 	}
 
 }

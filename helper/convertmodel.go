@@ -1,8 +1,6 @@
 package helper
 
 import (
-	"net/url"
-
 	"github.com/Alfeenn/article/model"
 	"github.com/Alfeenn/article/model/web"
 )
@@ -19,6 +17,7 @@ func ConvertModel(req model.Article) web.CatResp {
 		Category:   categoryslice,
 		Status:     req.Status,
 		Visibility: req.Visibility,
+		Details:    req.Details,
 	}
 }
 
@@ -35,8 +34,8 @@ func GetCategoryObj(req model.Article) []model.CategoryArticle {
 	for v := range catName {
 		categoryArticle.Name = catName[v]
 		categoryArticle.Slug = catName[v]
-		url, _ := url.JoinPath("http://localhost:8000/api/categories", catName[v])
-		categoryArticle.Url = url
+		// url, _ := url.JoinPath("http://localhost:8000/api/categories", catName[v])
+		// categoryArticle.Url = url
 
 		sliceCategory = append(sliceCategory, categoryArticle)
 	}

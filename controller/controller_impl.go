@@ -57,6 +57,7 @@ func (c *ControllerImpl) Find(g *gin.Context) {
 		Status: "OK",
 		Data:   result,
 	}
+
 	g.JSON(http.StatusOK, response)
 
 }
@@ -71,4 +72,10 @@ func (c *ControllerImpl) FindAll(g *gin.Context) {
 	}
 	g.JSON(http.StatusOK, response)
 
+}
+
+func (c *ControllerImpl) Ping(g *gin.Context) {
+	g.JSON(200, gin.H{
+		"message": "pong",
+	})
 }

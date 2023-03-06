@@ -8,4 +8,5 @@ type Controller interface {
 	Delete(g *gin.Context)
 	Find(g *gin.Context)
 	FindAll(g *gin.Context)
+	Ping(g *gin.Context)
 }
