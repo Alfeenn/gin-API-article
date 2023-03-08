@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	Create(ctx context.Context, tx *sql.Tx, category model.Article) model.Article
 	Update(ctx context.Context, tx *sql.Tx, category model.Article) model.Article
-	Delete(ctx context.Context, tx *sql.Tx, id string)
+	Delete(ctx context.Context, tx *sql.Tx, category model.Article)
 	FindAll(ctx context.Context, tx *sql.Tx) []model.Article
 	Find(ctx context.Context, tx *sql.Tx, id string) (model.Article, error)
 }

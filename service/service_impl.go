@@ -59,8 +59,10 @@ func (s *ServiceImpl) Delete(ctx context.Context, id string) {
 	helper.PanicIfErr(err)
 	defer helper.CommitorRollback(tx)
 	req, err := s.Rep.Find(ctx, tx, id)
-	helper.PanicIfErr(err)
-	s.Rep.Delete(ctx, tx, req.Id)
+	if err != nil {
+		exception.NewNotFounErr(err.Error())
+	}
+	s.Rep.Delete(ctx, tx, req)
 
 }
 

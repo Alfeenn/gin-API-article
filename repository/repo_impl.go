@@ -35,15 +35,15 @@ func (r *RepoImpl) Update(ctx context.Context, tx *sql.Tx, category model.Articl
 
 }
 
-func (r *RepoImpl) Delete(ctx context.Context, tx *sql.Tx, id string) {
+func (r *RepoImpl) Delete(ctx context.Context, tx *sql.Tx, category model.Article) {
 	SQL := "DELETE FROM article WHERE id=?"
-	_, err := tx.ExecContext(ctx, SQL, id)
+	_, err := tx.ExecContext(ctx, SQL, category.Id)
 	helper.PanicIfErr(err)
 }
 
 func (r *RepoImpl) FindAll(ctx context.Context, tx *sql.Tx) []model.Article {
 	sql := "SELECT a.id,a.name,a.status," +
-		"GROUP_CONCAT(DISTINCT c.name ORDER BY c.name) AS category," +
+		"GROUP_CONCAT(DISTINCT c.category ORDER BY c.category) AS category," +
 		"GROUP_CONCAT(DISTINCT c.url ORDER BY c.url)AS URL,a.visibility FROM wordpress AS w " +
 		"JOIN category_article AS c ON c.id = w.id_category " +
 		"JOIN article AS a ON a.id= w.id_article " +
